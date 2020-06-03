@@ -1,8 +1,8 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical"
-    android:background="@color/colorPrimary">
+    android:background="@color/colorPrimary"
+    android:orientation="vertical">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -10,31 +10,28 @@
         android:weightSum="2">
 
         <Button
-            android:layout_margin="10dp"
             android:id="@+id/button_gallery"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_margin="10dp"
             android:layout_weight="1"
-            android:textColor="#FFF"
-            android:textSize="20dp"
+            android:background="@color/colorPrimaryVariant"
             android:text="Gallery"
-            android:background="@color/colorPrimaryVariant"/>
+            android:textColor="#FFF"
+            android:textSize="20dp" />
 
         <Button
-            android:layout_margin="10dp"
             android:id="@+id/button_camera"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_margin="10dp"
             android:layout_weight="1"
-            android:textColor="#FFF"
-            android:textSize="20dp"
+            android:background="@color/colorPrimaryVariant"
             android:text="Camera"
-            android:background="@color/colorPrimaryVariant"/>
+            android:textColor="#FFF"
+            android:textSize="20dp" />
 
     </LinearLayout>
-
-
-
 
 
 </LinearLayout>
