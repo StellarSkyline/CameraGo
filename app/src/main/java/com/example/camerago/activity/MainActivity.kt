@@ -2,8 +2,11 @@ package com.example.camerago.activity
 
 import android.Manifest
 import android.content.Intent
+import android.content.Intent.FLAG_GRANT_PERSISTABLE_URI_PERMISSION
+import android.content.Intent.FLAG_GRANT_READ_URI_PERMISSION
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
+import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.provider.MediaStore
@@ -16,8 +19,11 @@ import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.room.Room
 import com.example.camerago.R
 import com.example.camerago.adapter.AdapterImage
+import com.example.camerago.database.DBHelper
+import com.example.camerago.database.Pictures
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import kotlinx.android.synthetic.main.activity_main.*
@@ -54,6 +60,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
             R.id.button_fab -> {showBottomSheet()}
             R.id.button_camera -> {checkCameraPermission()}
             R.id.button_gallery -> {checkGalleryPermission()}
+            R.id.button_populate -> {readDb()}
 
         }
     }
@@ -62,6 +69,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
         bottomView = layoutInflater.inflate(R.layout.bottom_sheet, null)
         bottomView.button_camera.setOnClickListener(this)
         bottomView.button_gallery.setOnClickListener(this)
+        bottomView.button_populate.setOnClickListener(this)
         var dialog = BottomSheetDialog(this)
         dialog.setContentView(bottomView)
         dialog.show()
@@ -74,8 +82,10 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
     }
 
     private fun openGallery() {
-        var intent = Intent(Intent.ACTION_PICK)
+        var intent = Intent(Intent.ACTION_OPEN_DOCUMENT)
         intent.type = "image/*"
+        intent.addFlags(FLAG_GRANT_READ_URI_PERMISSION)
+        intent.addFlags(FLAG_GRANT_PERSISTABLE_URI_PERMISSION)
         startActivityForResult(intent, READWRITE_REQUEST_CODE)
     }
 
@@ -112,9 +122,18 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
 
             READWRITE_REQUEST_CODE -> {
                 var imageUri = data?.data
-                var item = MediaStore.Images.Media.getBitmap(this.contentResolver,imageUri)
-                mList.add(item)
-                adapter.setData(mList)
+                var item = Pictures(photoString = imageUri.toString())
+
+                var myDb = Room.databaseBuilder(this, DBHelper::class.java,"photoDB")
+                    .allowMainThreadQueries()
+                    .build()
+
+                myDb.myDao().addPicture(item)
+
+
+//                var item = MediaStore.Images.Media.getBitmap(this.contentResolver,imageUri)
+//                mList.add(item)
+//                adapter.setData(mList)
             }
         }
     }
@@ -141,6 +160,22 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
                 }
             }
         }
+    }
+
+    fun readDb(){
+        var myDb = Room.databaseBuilder(this, DBHelper::class.java,"photoDB")
+            .allowMainThreadQueries()
+            .build()
+
+        var list = myDb.myDao().getPictureList()
+
+        for(i in list) {
+            var uri = Uri.parse(i.photoString)
+            var item = MediaStore.Images.Media.getBitmap(this.contentResolver,uri)
+            mList.add(item)
+        }
+        adapter.setData(mList)
+
     }
 
 
