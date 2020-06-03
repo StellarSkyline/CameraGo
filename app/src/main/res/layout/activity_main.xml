@@ -19,10 +19,16 @@
             android:textColor="@color/colorPrimary"
             android:textAlignment="center"/>
         
-        <ImageView
-            android:id="@+id/image_view"
-            android:layout_width="300dp"
-            android:layout_height="500dp"
+<!--        <ImageView-->
+<!--            android:id="@+id/image_view"-->
+<!--            android:layout_width="300dp"-->
+<!--            android:layout_height="500dp"-->
+<!--            android:layout_centerInParent="true"/>-->
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recycler_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_centerInParent="true"/>
 
 

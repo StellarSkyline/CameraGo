@@ -11,10 +11,13 @@ import android.text.Layout
 import android.view.LayoutInflater
 import android.view.View
 import android.view.View.inflate
+import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.camerago.R
+import com.example.camerago.adapter.AdapterImage
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import kotlinx.android.synthetic.main.activity_main.*
@@ -25,6 +28,8 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
     lateinit var bottomView:View
     private val CAMERA_REQUEST_CODE = 100
     private val READWRITE_REQUEST_CODE = 200
+    lateinit var adapter:AdapterImage
+    var mList:ArrayList<Bitmap> = ArrayList()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -35,6 +40,9 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
     }
 
     private fun init() {
+        adapter = AdapterImage(this)
+        recycler_view.layoutManager = LinearLayoutManager(this)
+        recycler_view.adapter = adapter
         bottomView = layoutInflater.inflate(R.layout.bottom_sheet, null)
         button_fab.setOnClickListener(this)
 
@@ -98,11 +106,15 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
         when(requestCode) {
             CAMERA_REQUEST_CODE -> {
                 var item = data!!.extras!!.get("data") as Bitmap
-                image_view.setImageBitmap(item)
+                mList.add(item)
+                adapter.setData(mList)
             }
 
             READWRITE_REQUEST_CODE -> {
-                image_view.setImageURI(data?.data)
+                var imageUri = data?.data
+                var item = MediaStore.Images.Media.getBitmap(this.contentResolver,imageUri)
+                mList.add(item)
+                adapter.setData(mList)
             }
         }
     }
