@@ -28,6 +28,7 @@ import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.bottom_sheet.view.*
+import java.net.URI
 
 class MainActivity : AppCompatActivity(), View.OnClickListener {
 
@@ -115,6 +116,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
 
         when(requestCode) {
             CAMERA_REQUEST_CODE -> {
+
                 var item = data!!.extras!!.get("data") as Bitmap
                 mList.add(item)
                 adapter.setData(mList)
@@ -130,10 +132,6 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
 
                 myDb.myDao().addPicture(item)
 
-
-//                var item = MediaStore.Images.Media.getBitmap(this.contentResolver,imageUri)
-//                mList.add(item)
-//                adapter.setData(mList)
             }
         }
     }
